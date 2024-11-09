@@ -1,0 +1,52 @@
+/* 全局样式 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    text-align: center;
+    padding: 1em;
+}
+
+nav a {
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+footer {
+    text-align: center;
+    padding: 1em;
+    background-color: #f0f0f0;
+}
+
+/* 主页样式 */
+.homepage {
+    background-color: #e0f7fa; /* 浅蓝色背景 */
+    color: #388e3c; /* 深绿色文字 */
+}
+
+.homepage header {
+    background-color: #388e3c; /* 深绿色 */
+    color: #e0f7fa; /* 浅蓝色文字 */
+}
+
+.homepage nav a {
+    color: #e0f7fa; /* 浅蓝色链接 */
+}
+
+/* 各页面的米兰色背景 */
+.other-pages {
+    background-color: #f4e3d7; /* 米兰色背景 */
+    color: #4d4d4d; /* 深灰色文字 */
+}
+
+.other-pages header {
+    background-color: #8d6e63; /* 暗棕色 */
+    color: #f4e3d7; /* 米兰色文字 */
+}
+
+.other-pages nav a {
+    color: #f4e3d7; /* 米兰色链接 */
+}
