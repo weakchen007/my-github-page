@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
+    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% seo %}
+</head>
+<body>
+    {% include header.html %}
+    {% include nav.html %}
+    
+    <main class="container mx-auto px-4 py-8">
+        {{ content }}
+    </main>
+
+    {% include footer.html %}
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js"></script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('navigation', {
+                isOpen: false,
+                toggle() {
+                    this.isOpen = !this.isOpen
+                }
+            })
+        })
+    </script>
+</body>
+</html>
