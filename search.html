@@ -1,0 +1,164 @@
+---
+layout: page
+title: 站内搜索
+permalink: /search/
+---
+<div x-data="searchComponent()" class="max-w-4xl mx-auto">
+    <div class="mb-8">
+        <div class="relative">
+            <input 
+                x-model="searchQuery" 
+                @input="search"
+                type="search" 
+                placeholder="搜索文章..." 
+                class="w-full px-4 py-3 text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+            <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <i class="fas fa-search"></i>
+            </span>
+        </div>
+        
+        <!-- 搜索过滤器 -->
+        <div class="mt-4 flex flex-wrap gap-4">
+            <label class="inline-flex items-center">
+                <input type="checkbox" x-model="filters.aiTips" class="form-checkbox h-5 w-5 text-blue-600">
+                <span class="ml-2">AI技巧</span>
+            </label>
+            <label class="inline-flex items-center">
+                <input type="checkbox" x-model="filters.tech" class="form-checkbox h-5 w-5 text-blue-600">
+                <span class="ml-2">网络技术</span>
+            </label>
+            <label class="inline-flex items-center">
+                <input type="checkbox" x-model="filters.movie" class="form-checkbox h-5 w-5 text-blue-600">
+                <span class="ml-2">观影感悟</span>
+            </label>
+            <label class="inline-flex items-center">
+                <input type="checkbox" x-model="filters.book" class="form-checkbox h-5 w-5 text-blue-600">
+                <span class="ml-2">读书笔记</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- 搜索结果 -->
+    <div x-show="searchQuery.length > 0">
+        <h2 class="text-xl font-semibold mb-4" x-text="'搜索结果 (' + searchResults.length + ')'"></h2>
+        
+        <template x-if="searchResults.length === 0">
+            <div class="text-center py-8 text-gray-500">
+                未找到相关内容
+            </div>
+        </template>
+
+        <div class="space-y-6">
+            <template x-for="result in searchResults" :key="result.url">
+                <article class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                    <a :href="result.url" class="block">
+                        <h3 class="text-xl font-semibold text-blue-600 hover:text-blue-800" x-text="result.title"></h3>
+                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                            <span class="mr-4" x-text="result.date"></span>
+                            <span class="mr-4" x-text="result.category"></span>
+                        </div>
+                        <p class="mt-2 text-gray-600" x-text="result.preview"></p>
+                        <div class="mt-2 flex flex-wrap gap-2">
+                            <template x-for="tag in result.tags" :key="tag">
+                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-sm rounded-full" x-text="'#' + tag"></span>
+                            </template>
+                        </div>
+                    </a>
+                </article>
+            </template>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+<script>
+function searchComponent() {
+    return {
+        searchQuery: '',
+        searchIndex: null,
+        documents: {},
+        searchResults: [],
+        filters: {
+            aiTips: true,
+            tech: true,
+            movie: true,
+            book: true
+        },
+        
+        async init() {
+            // 加载搜索索引和文档数据
+            const response = await fetch('/assets/js/search-index.json');
+            const data = await response.json();
+            
+            this.documents = data.documents;
+            
+            // 创建搜索索引
+            this.searchIndex = lunr(function() {
+                this.field('title', { boost: 10 });
+                this.field('content');
+                this.field('tags', { boost: 5 });
+                this.field('category', { boost: 5 });
+                
+                for (const [id, doc] of Object.entries(data.documents)) {
+                    this.add({
+                        id: id,
+                        title: doc.title,
+                        content: doc.content,
+                        tags: doc.tags.join(' '),
+                        category: doc.category
+                    });
+                }
+            });
+        },
+        
+        search() {
+            if (this.searchQuery.length < 2) {
+                this.searchResults = [];
+                return;
+            }
+            
+            // 执行搜索
+            const results = this.searchIndex.search(this.searchQuery);
+            
+            // 处理结果
+            this.searchResults = results
+                .map(result => {
+                    const doc = this.documents[result.ref];
+                    return {
+                        ...doc,
+                        preview: this.generatePreview(doc.content, this.searchQuery),
+                        score: result.score
+                    };
+                })
+                .filter(result => {
+                    // 应用分类过滤
+                    switch(result.category) {
+                        case 'AI技巧': return this.filters.aiTips;
+                        case '网络技术': return this.filters.tech;
+                        case '观影感悟': return this.filters.movie;
+                        case '读书笔记': return this.filters.book;
+                        default: return true;
+                    }
+                });
+        },
+        
+        generatePreview(content, query) {
+            const words = content.split(' ');
+            const queryIndex = words.findIndex(word => 
+                word.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            if (queryIndex === -1) {
+                return content.slice(0, 150) + '...';
+            }
+            
+            const start = Math.max(0, queryIndex - 10);
+            const end = Math.min(words.length, queryIndex + 10);
+            return (start > 0 ? '...' : '') +
+                   words.slice(start, end).join(' ') +
+                   (end < words.length ? '...' : '');
+        }
+    }
+}
+</script>
