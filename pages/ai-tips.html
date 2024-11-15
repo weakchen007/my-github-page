@@ -1,0 +1,121 @@
+---
+layout: default
+title: AI技巧
+permalink: /ai-tips/
+---
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 分类页面头部 -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">AI技巧</h1>
+        <p class="text-gray-600">探索AI工具使用技巧和最佳实践</p>
+    </div>
+
+    <!-- 文章过滤和排序 -->
+    <div x-data="{ 
+        sortBy: 'date',
+        showFilters: false,
+        selectedTags: [],
+        posts: []
+    }" class="mb-8">
+        <div class="flex flex-wrap items-center gap-4 mb-4">
+            <button @click="showFilters = !showFilters" class="btn-filter">
+                <i class="fas fa-filter mr-2"></i>
+                筛选
+            </button>
+            
+            <select x-model="sortBy" class="form-select">
+                <option value="date">最新发布</option>
+                <option value="title">标题排序</option>
+                <option value="popular">最受欢迎</option>
+            </select>
+        </div>
+
+        <!-- 筛选面板 -->
+        <div x-show="showFilters" class="bg-gray-50 p-4 rounded-lg mb-6">
+            <h3 class="font-medium mb-3">按标签筛选</h3>
+            <div class="flex flex-wrap gap-2">
+                {% assign tags = site.tags | sort %}
+                {% for tag in tags %}
+                <label class="inline-flex items-center">
+                    <input type="checkbox" x-model="selectedTags" value="{{ tag[0] }}" class="form-checkbox">
+                    <span class="ml-2">{{ tag[0] }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 文章列表 -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for post in site.categories.ai-tips %}
+            <article class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <h2 class="text-xl font-semibold mb-2">
+                        <a href="{{ post.url }}" class="text-gray-900 hover:text-blue-600">
+                            {{ post.title }}
+                        </a>
+                    </h2>
+                    
+                    <p class="text-gray-600 mb-4">{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
+                    
+                    {% if post.tags %}
+                    <div class="mb-4">
+                        {% for tag in post.tags %}
+                        <span class="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                            #{{ tag }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="flex items-center justify-between text-sm">
+                        <time class="text-gray-500" datetime="{{ post.date | date_to_xmlschema }}">
+                            {{ post.date | date: "%Y-%m-%d" }}
+                        </time>
+                        <a href="{{ post.url }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                            阅读更多 &rarr;
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 分页 -->
+    {% if paginator.total_pages > 1 %}
+    <div class="flex justify-center space-x-2">
+        {% if paginator.previous_page %}
+        <a href="{{ paginator.previous_page_path }}" class="pagination-link">&larr; 上一页</a>
+        {% endif %}
+        
+        {% for page in (1..paginator.total_pages) %}
+        <a href="{% if page == 1 %}{{ '/ai-tips/' }}{% else %}{{ site.paginate_path | replace: ':num', page }}{% endif %}"
+           class="pagination-link {% if page == paginator.page %}active{% endif %}">
+            {{ page }}
+        </a>
+        {% endfor %}
+        
+        {% if paginator.next_page %}
+        <a href="{{ paginator.next_page_path }}" class="pagination-link">下一页 &rarr;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.btn-filter {
+    @apply px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-700 font-medium transition-colors;
+}
+
+.form-select {
+    @apply px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.pagination-link {
+    @apply px-4 py-2 border rounded-md hover:bg-gray-50 transition-colors;
+}
+
+.pagination-link.active {
+    @apply bg-blue-600 text-white border-blue-600;
+}
+</style>
