@@ -1,13 +1,13 @@
 # 网站设置
-title: 我的技术与阅读分享
+title: 风清扬的技术与阅读分享
 description: 分享AI使用技巧、网络技术、观影感悟与读书笔记
 baseurl: ""  # 如果是项目站点需要设置为 "/项目名"
 url: ""  # 你的GitHub Pages URL
 
 # 作者信息
 author:
-  name: 你的名字
-  email: your-email@example.com
+  name: 风清扬
+  email: weakchen@gmail.com
 
 # 构建设置
 markdown: kramdown
@@ -63,3 +63,10 @@ defaults:
       type: "book_notes"
     values:
       category: "读书笔记"
+   - scope:
+      path: ""
+      type: "search"
+    values:
+      category: "站内搜索"
+
+      
