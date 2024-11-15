@@ -1,221 +1,88 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>风清扬的技术与阅读分享</title>
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --bg-color: #f5f6fa;
-            --text-color: #2c3e50;
-        }
+---
+layout: default
+title: 首页
+---
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 头部横幅 -->
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg shadow-lg mb-8 p-8 text-white">
+        <h1 class="text-4xl font-bold mb-4">欢迎来到我的博客</h1>
+        <p class="text-xl">分享AI使用技巧、网络技术、观影感悟与读书笔记</p>
+    </div>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--bg-color);
-        }
-
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
-
-        nav {
-            background-color: #34495e;
-            padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-
-        nav a:hover {
-            background-color: var(--secondary-color);
-        }
-
-        main {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: 2rem;
-        }
-
-        .article-list {
-            display: grid;
-            gap: 2rem;
-        }
-
-        article {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        article h2 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .meta {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        .tag {
-            display: inline-block;
-            background: var(--secondary-color);
-            color: white;
-            padding: 0.2rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin-right: 0.5rem;
-        }
-
-        aside {
-            position: sticky;
-            top: 5rem;
-            height: fit-content;
-        }
-
-        .widget {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .widget h3 {
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-        }
-
-        .widget ul {
-            list-style: none;
-        }
-
-        .widget li {
-            margin-bottom: 0.5rem;
-        }
-
-        footer {
-            background-color: var(--primary-color);
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-        }
-
-        @media (max-width: 768px) {
-            main {
-                grid-template-columns: 1fr;
-            }
-
-            nav ul {
-                flex-direction: column;
-                align-items: center;
-                gap: 1rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>我的技术与阅读分享</h1>
-        <p>分享AI使用技巧、网络技术、观影感悟与读书笔记</p>
-    </header>
-
-    <nav>
-        <ul>
-            <li><a href="#ai">AI技巧</a></li>
-            <li><a href="#tech">网络技术</a></li>
-            <li><a href="#movie">观影感悟</a></li>
-            <li><a href="#book">读书笔记</a></li>
-            <li><a href="#about">关于我</a></li>
-        </ul>
-    </nav>
-
-    <main>
-        <div class="article-list">
-            <article>
-                <h2>Claude使用技巧分享</h2>
-                <div class="meta">
-                    <span class="date">2024-03-15</span>
-                    <span class="tag">AI</span>
-                    <span class="tag">教程</span>
+    <!-- 最新文章展示 -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        {% for post in site.posts limit:6 %}
+        <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    {% case post.categories[0] %}
+                    {% when 'ai-tips' %}
+                        <i class="fas fa-robot text-blue-500 text-xl"></i>
+                    {% when 'tech' %}
+                        <i class="fas fa-code text-green-500 text-xl"></i>
+                    {% when 'movies' %}
+                        <i class="fas fa-film text-purple-500 text-xl"></i>
+                    {% when 'books' %}
+                        <i class="fas fa-book text-red-500 text-xl"></i>
+                    {% endcase %}
+                    <span class="ml-2 text-sm text-gray-600">{{ post.categories[0] | capitalize }}</span>
                 </div>
-                <p>在这篇文章中，我将分享如何更好地使用Claude进行创作和学习...</p>
-                <a href="#" class="read-more">阅读更多</a>
-            </article>
-
-            <article>
-                <h2>GitHub Pages搭建个人博客教程</h2>
-                <div class="meta">
-                    <span class="date">2024-03-10</span>
-                    <span class="tag">技术</span>
-                    <span class="tag">教程</span>
-                </div>
-                <p>详细介绍如何利用GitHub Pages搭建一个专业的个人博客网站...</p>
-                <a href="#" class="read-more">阅读更多</a>
-            </article>
-        </div>
-
-        <aside>
-            <div class="widget">
-                <h3>分类</h3>
-                <ul>
-                    <li><a href="#ai">AI技巧 (5)</a></li>
-                    <li><a href="#tech">网络技术 (8)</a></li>
-                    <li><a href="#movie">观影感悟 (3)</a></li>
-                    <li><a href="#book">读书笔记 (6)</a></li>
-                </ul>
-            </div>
-
-            <div class="widget">
-                <h3>标签云</h3>
-                <div class="tags">
-                    <span class="tag">AI</span>
-                    <span class="tag">Python</span>
-                    <span class="tag">学习笔记</span>
-                    <span class="tag">网站建设</span>
+                
+                <h2 class="text-xl font-semibold mb-2">
+                    <a href="{{ post.url }}" class="text-gray-900 hover:text-blue-600">
+                        {{ post.title }}
+                    </a>
+                </h2>
+                
+                <p class="text-gray-600 mb-4">{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
+                
+                <div class="flex items-center justify-between text-sm">
+                    <time class="text-gray-500" datetime="{{ post.date | date_to_xmlschema }}">
+                        {{ post.date | date: "%Y-%m-%d" }}
+                    </time>
+                    <a href="{{ post.url }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                        阅读更多 &rarr;
+                    </a>
                 </div>
             </div>
-        </aside>
-    </main>
+        </article>
+        {% endfor %}
+    </div>
 
-    <footer>
-        <p>© 2024 我的技术与阅读分享. All rights reserved.</p>
-        <p>Powered by GitHub Pages</p>
-    </footer>
-</body>
-</html>
+    <!-- 分类导航 -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <a href="/ai-tips" class="category-card bg-blue-50 hover:bg-blue-100">
+            <i class="fas fa-robot text-blue-500 text-3xl mb-4"></i>
+            <h2 class="text-xl font-semibold text-blue-900">AI技巧</h2>
+            <p class="text-blue-700">探索AI工具使用技巧和最佳实践</p>
+        </a>
+        
+        <a href="/tech" class="category-card bg-green-50 hover:bg-green-100">
+            <i class="fas fa-code text-green-500 text-3xl mb-4"></i>
+            <h2 class="text-xl font-semibold text-green-900">网络技术</h2>
+            <p class="text-green-700">分享网络开发和技术学习心得</p>
+        </a>
+        
+        <a href="/movies" class="category-card bg-purple-50 hover:bg-purple-100">
+            <i class="fas fa-film text-purple-500 text-3xl mb-4"></i>
+            <h2 class="text-xl font-semibold text-purple-900">观影感悟</h2>
+            <p class="text-purple-700">电影观后感和影评分享</p>
+        </a>
+        
+        <a href="/books" class="category-card bg-red-50 hover:bg-red-100">
+            <i class="fas fa-book text-red-500 text-3xl mb-4"></i>
+            <h2 class="text-xl font-semibold text-red-900">读书笔记</h2>
+            <p class="text-red-700">读书笔记和心得体会</p>
+        </a>
+    </div>
+</div>
+
+<style>
+.category-card {
+    @apply p-6 rounded-lg shadow-md transition-all duration-300 flex flex-col items-center text-center;
+}
+
+.category-card:hover {
+    @apply transform -translate-y-1 shadow-lg;
+}
+</style>
